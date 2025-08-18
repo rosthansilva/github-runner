@@ -128,33 +128,42 @@ STDERR:
 6. **Docker**
    Comandos do tipo `docker` são executados em containers de forma isolada.
 
----
+## Fluxo do Runner v2
 
+```mermaid
 flowchart TD
-    A[Início da Execução] --> B[Pré-checks e Validações]
-    B --> C{Clonar Repositório Remoto? 🔄}
-    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]
-    C -- Não --> E[Usar workflow local]
-    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]
-    E --> F
-    F --> G[Executar pipeline principal]
-    
-    subgraph PIPELINE[Pipeline Features]
-        G1[Pipeline condicional 🔀] 
-        G2[Paralelismo avançado ⚡] 
-        G3[Suporte Kubernetes ☸️] 
-        G4[Integração Vault 🔐] 
-        G5[Templates dinâmicos 📝] 
-        G6[Modo Dry-run 🕵️‍♂️] 
-        G7[Rollback automático ⏪] 
-        G8[Checkpoint / Resume ⏩] 
-        G9[Suporte multi-OS 🌐] 
-        G10[Versionamento de scripts 🗂️]
-    end
-    
-    G --> PIPELINE
-    PIPELINE --> H[Logs e Auditoria 📊🎨]
-    H --> I[Métricas de performance ⏱️]
-    I --> J[Conclusão]
+    %% Estilos de nós
+    classDef inicioFim fill:#DDEEFF,stroke:#333,stroke-width:2px;
+    classDef processo fill:#E0FFD8,stroke:#333,stroke-width:1.5px;
+    classDef decisao fill:#FFF2CC,stroke:#333,stroke-width:2px;
+    classDef feature fill:#FFDDE0,stroke:#333,stroke-width:1px;
+    classDef log fill:#F0E6FF,stroke:#333,stroke-width:1px;
 
-```
+    %% Fluxo principal
+    A[Início da Execução]:::inicioFim --> B[Pré-checks e Validações]:::processo
+    B --> C{Clonar Repositório Remoto? 🔄}:::decisao
+    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]:::processo
+    C -- Não --> E[Usar workflow local]:::processo
+    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]:::processo
+    E --> F
+    F --> G[Executar pipeline principal]:::processo
+
+    %% Pipeline Features agrupadas
+    subgraph PIPELINE[Pipeline Features 🚀]
+        direction TB
+        G1[Pipeline condicional 🔀]:::feature
+        G2[Paralelismo avançado ⚡]:::feature
+        G3[Suporte Kubernetes ☸️]:::feature
+        G4[Integração Vault 🔐]:::feature
+        G5[Templates dinâmicos 📝]:::feature
+        G6[Modo Dry-run 🕵️‍♂️]:::feature
+        G7[Rollback automático ⏪]:::feature
+        G8[Checkpoint / Resume ⏩]:::feature
+        G9[Suporte multi-OS 🌐]:::feature
+        G10[Versionamento de scripts 🗂️]:::feature
+    end
+
+    G --> PIPELINE
+    PIPELINE --> H[Logs e Auditoria 📊🎨]:::log
+    H --> I[Métricas de performance ⏱️]:::log
+    I --> J[Conclusão]:::inicioFim
