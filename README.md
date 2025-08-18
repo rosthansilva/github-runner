@@ -129,37 +129,55 @@ STDERR:
    Comandos do tipo `docker` são executados em containers de forma isolada.
 
 
+---
 
+## **Roadmap – runner-v2** 🚀
 
+### **Curto Prazo (rápida entrega / impacto imediato)** 🟢
 
-Feature Requests:
+Essas são features de **alto valor e baixa complexidade**, ideais para validar a base do runner:
 
-## **Features Futuras – runner-v2** 🚀
+| Feature                     | Justificativa / Valor                                                           | Emoji  | Complexidade |
+| --------------------------- | ------------------------------------------------------------------------------- | ------ | ------------ |
+| Execução local offline      | Permite testes rápidos e desenvolvimento sem depender de rede.                  | 🖥️    | 2            |
+| Modo Dry-run                | Simula execução sem alterar nada, ideal para validação e segurança.             | 🕵️‍♂️ | 2            |
+| Alertas visuais no terminal | Facilita interpretação de logs e melhora produtividade.                         | 🎨     | 1            |
+| Pré-checks e validações     | Evita falhas desnecessárias e aumenta confiabilidade.                           | ✅      | 2            |
+| Integração CI/CD            | Permite acionamento do runner em pipelines existentes, garantindo uso imediato. | 🔗     | 2            |
 
-| Feature                                | Descrição                                                                                                                                                    | Emoji  |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
-| Execução via Zuul com repo remoto      | Permitir rodar a role a partir de arquivos existentes em um repositório remoto indicado no workflow, clonando o repo e executando a role com esses arquivos. | 🔄     |
-| Execução local offline                 | Rodar a role diretamente no host local, usando arquivos já disponíveis.                                                                                      | 🖥️    |
-| Pipeline condicional                   | Executar tarefas com base no resultado de fases anteriores, permitindo fluxos dinâmicos.                                                                     | 🔀     |
-| Rollback automático                    | Reverter mudanças em caso de falha durante a execução da role ou script.                                                                                     | ⏪      |
-| Paralelismo avançado                   | Suporte a execução de múltiplos itens em paralelo com controle de dependências entre eles.                                                                   | ⚡      |
-| Suporte a Kubernetes                   | Executar comandos ou scripts dentro de pods e namespaces, integrando ao cluster.                                                                             | ☸️     |
-| Integração com Vault                   | Recuperar segredos e credenciais de forma segura durante a execução.                                                                                         | 🔐     |
-| Templates dinâmicos                    | Gerar comandos ou scripts com base em variáveis e templates Jinja2, adaptando execuções.                                                                     | 📝     |
-| Auditoria completa                     | Gerar logs detalhados de quem executou o quê e quando, garantindo rastreabilidade.                                                                           | 📊     |
-| Modo Dry-run                           | Simular a execução sem alterar nada, mostrando o que seria feito.                                                                                            | 🕵️‍♂️ |
-| Suporte multi-OS                       | Garantir compatibilidade com Windows, Linux e MacOS.                                                                                                         | 🌐     |
-| Checkpoint / Resume                    | Retomar a execução de onde parou em caso de falha, sem reiniciar todo o processo.                                                                            | ⏩      |
-| Métricas de performance                | Medir tempo de execução e consumo de recursos de cada item da execução.                                                                                      | ⏱️     |
-| Integração CI/CD                       | Suporte para integração com pipelines, podendo ser acionado por Jenkins, GitHub Actions, GitLab CI etc.                                                      | 🔗     |
-| Alertas visuais no terminal            | Destacar erros, warnings e sucessos com cores, melhorando visibilidade.                                                                                      | 🎨     |
-| Versionamento de scripts               | Executar versões específicas de scripts conforme tag ou commit.                                                                                              | 🗂️    |
-| Suporte a múltiplos workflows por repo | Permitir que um repositório tenha vários workflows independentes.                                                                                            | 🔄     |
-| Parâmetros dinâmicos por pipeline      | Injetar variáveis por workflow, branch ou ambiente, personalizando a execução.                                                                               | ⚙️     |
-| Pré-checks e validações                | Executar verificações antes da execução principal, garantindo pré-requisitos.                                                                                | ✅      |
-| Logs centralizados                     | Armazenar logs estruturados de execução para análise e auditoria.                                                                                            | 🗃️    |
-| Suporte a múltiplos repositórios       | Permitir combinar arquivos de mais de um repositório remoto na execução.                                                                                     | 🌐     |
+---
 
+### **Médio Prazo (impacto estratégico / complexidade moderada)** 🟡
+
+Features que agregam **segurança, flexibilidade e rastreabilidade**:
+
+| Feature                                | Justificativa / Valor                                                                                | Emoji | Complexidade |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----- | ------------ |
+| Pipeline condicional                   | Fluxos inteligentes baseados em resultados anteriores, reduzindo retrabalho e aumentando eficiência. | 🔀    | 3            |
+| Templates dinâmicos                    | Reuso e parametrização de scripts, reduzindo erros e duplicação.                                     | 📝    | 3            |
+| Integração com Vault                   | Segurança aprimorada, evitando hardcoding de credenciais.                                            | 🔐    | 3            |
+| Auditoria completa                     | Rastreabilidade e compliance garantidas.                                                             | 📊    | 3            |
+| Suporte multi-OS                       | Maior compatibilidade e flexibilidade de execução em diferentes sistemas.                            | 🌐    | 3            |
+| Logs centralizados                     | Facilita análise e auditoria de execuções.                                                           | 🗃️   | 3            |
+| Versionamento de scripts               | Garantia de consistência em diferentes versões de scripts ou roles.                                  | 🗂️   | 3            |
+| Parâmetros dinâmicos por pipeline      | Personalização por branch, workflow ou ambiente, aumentando flexibilidade.                           | ⚙️    | 3            |
+| Suporte a múltiplos workflows por repo | Organização e manutenção facilitadas em projetos complexos.                                          | 🔄    | 3            |
+
+---
+
+### **Longo Prazo (alto valor / alta complexidade)** 🔴
+
+Features que demandam **integração avançada, automação e paralelismo**, mas trarão grande impacto no desempenho e confiabilidade:
+
+| Feature                           | Justificativa / Valor                                                                                            | Emoji | Complexidade |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----- | ------------ |
+| Execução via Zuul com repo remoto | Atualização centralizada e colaboração entre equipes, permitindo rodar workflows direto de repositórios remotos. | 🔄    | 4            |
+| Rollback automático               | Reduz risco em ambientes de produção revertendo alterações automaticamente em falhas.                            | ⏪     | 5            |
+| Paralelismo avançado              | Reduz tempo total de execução mantendo dependências entre tarefas.                                               | ⚡     | 4            |
+| Suporte a Kubernetes              | Integração com clusters cloud-native, essencial para pipelines modernos.                                         | ☸️    | 4            |
+| Checkpoint / Resume               | Retoma execuções parciais após falhas, evitando retrabalho em pipelines longos.                                  | ⏩     | 4            |
+| Suporte a múltiplos repositórios  | Combinação de arquivos de diferentes repositórios, essencial para ambientes distribuídos ou microserviços.       | 🔄    | 4            |
+| Métricas de performance           | Permite monitoramento e otimização de pipelines com base em consumo de tempo e recursos.                         | ⏱️    | 3            |
 
 ## Fluxo do Runner v2
 
