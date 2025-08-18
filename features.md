@@ -1,7 +1,3 @@
-Perfeito! Aqui está a versão consolidada das **features futuras** do seu runner, focando em funcionalidades, sem se prender a ferramentas específicas, e incluindo todas as que você listou:
-
----
-
 ## **Features Futuras – runner-v2** 🚀
 
 | Feature                                | Descrição                                                                                                                                                    | Emoji  |
@@ -27,9 +23,3 @@ Perfeito! Aqui está a versão consolidada das **features futuras** do seu runne
 | Pré-checks e validações                | Executar verificações antes da execução principal, garantindo pré-requisitos.                                                                                | ✅      |
 | Logs centralizados                     | Armazenar logs estruturados de execução para análise e auditoria.                                                                                            | 🗃️    |
 | Suporte a múltiplos repositórios       | Permitir combinar arquivos de mais de um repositório remoto na execução.                                                                                     | 🌐     |
-
----
-
-Se você quiser, posso **desenhar uma tabela ou diagrama visual do fluxo completo do runner-v2**, mostrando como cada feature se encaixa na execução, para ter uma visão mais estratégica do roadmap.
-
-Quer que eu faça isso?
