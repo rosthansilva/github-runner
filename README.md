@@ -130,28 +130,31 @@ STDERR:
 
 ---
 
-## Estrutura de arquivos da role
+flowchart TD
+    A[Início da Execução] --> B[Pré-checks e Validações]
+    B --> C{Clonar Repositório Remoto? 🔄}
+    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]
+    C -- Não --> E[Usar workflow local]
+    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]
+    E --> F
+    F --> G[Executar pipeline principal]
+    
+    subgraph PIPELINE[Pipeline Features]
+        G1[Pipeline condicional 🔀] 
+        G2[Paralelismo avançado ⚡] 
+        G3[Suporte Kubernetes ☸️] 
+        G4[Integração Vault 🔐] 
+        G5[Templates dinâmicos 📝] 
+        G6[Modo Dry-run 🕵️‍♂️] 
+        G7[Rollback automático ⏪] 
+        G8[Checkpoint / Resume ⏩] 
+        G9[Suporte multi-OS 🌐] 
+        G10[Versionamento de scripts 🗂️]
+    end
+    
+    G --> PIPELINE
+    PIPELINE --> H[Logs e Auditoria 📊🎨]
+    H --> I[Métricas de performance ⏱️]
+    I --> J[Conclusão]
 
-```
-roles/runner-v2/
-├─ tasks/
-│  ├─ main.yml        # Fluxo principal (pre-run, run-action, post-run)
-│  ├─ run_phase.yml   # Executa cada fase
-│  └─ run_item.yml    # Executa cada item da fase
-└─ readme.md          # Este arquivo
-```
-
----
-
-## Exemplo de saída no console
-
-```
-┌─[ Deploy Python | python3 ]─────────────
-│ Comando: python3 scripts/deploy.py
-│ Return Code: 0
-├─ STDOUT ─────────────
-  Deploy concluído com sucesso
-├─ STDERR ─────────────
-  
-└───────────────────────
 ```
