@@ -143,7 +143,7 @@ Essas são features de **alto valor e baixa complexidade**, ideais para validar 
 | Modo Dry-run                | Simula execução sem alterar nada, ideal para validação e segurança.             | 🕵️‍♂️ | 2            |
 | Alertas visuais no terminal | Facilita interpretação de logs e melhora produtividade.                         | 🎨     | 1            |
 | Pré-checks e validações     | Evita falhas desnecessárias e aumenta confiabilidade.  **exemplo** : verificar existencia de arquivos e diretórios, accesso a urls e etc                         | ✅      | 2            |
-| Integração CI/CD            | Permite acionamento do runner em pipelines existentes, garantindo uso imediato. | 🔗     | 2            |
+| Integração CI/CD            | Permite acionamento do runner em pipelines existentes, chamando a partir de um repositório independente do zuul e garantindo uso imediato. | 🔗     | 2            |
 
 ---
 
