@@ -1,0 +1,17 @@
+- name: Executar Pre-run
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Pre-run"
+    phase_items: "{{ pre_run }}"
+
+- name: Executar Run Action
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Run Action"
+    phase_items: "{{ run_action }}"
+
+- name: Executar Post-run
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Post-run"
+    phase_items: "{{ post_run }}"

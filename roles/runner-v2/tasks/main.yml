@@ -1,0 +1,52 @@
+---
+- name: Garantir diretório temporário
+  ansible.builtin.file:
+    path: "{{ runner_config.tmp_dir }}"
+    state: directory
+    mode: '0755'
+
+# 🔹 Pré-verificação PowerShell
+- name: Verificar se há itens PowerShell a executar
+  ansible.builtin.set_fact:
+    need_powershell: >-
+      {{ pre_run | selectattr('type','equalto','powershell') | list | length > 0
+         or run_action | selectattr('type','equalto','powershell') | list | length > 0
+         or post_run | selectattr('type','equalto','powershell') | list | length > 0 }}
+
+- name: Checar se PowerShell está instalado
+  ansible.builtin.command: "which pwsh"
+  register: pwsh_check
+  ignore_errors: yes
+  when: need_powershell
+
+- name: Instalar PowerShell no Ubuntu se necessário
+  ansible.builtin.shell: |
+    sudo snap install powershell --channel=lts/stable --classic
+  when:
+    - need_powershell
+    - pwsh_check.rc != 0
+    - ansible_facts['os_family'] == 'Debian'
+
+- name: Informar instalação do PowerShell
+  ansible.builtin.debug:
+    msg: "PowerShell instalado ou já disponível."
+  when: need_powershell
+
+# 🔹 Rodar fases
+- name: Executar Pre-run 🚀
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Pre-run"
+    phase_items: "{{ pre_run }}"
+
+- name: Executar Run Action 🏃
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Run Action"
+    phase_items: "{{ run_action }}"
+
+- name: Executar Post-run 🛠️
+  include_tasks: run_phase.yml
+  vars:
+    phase_name: "Post-run"
+    phase_items: "{{ post_run }}"

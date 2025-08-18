@@ -1,0 +1,10 @@
+pre_run: []
+run_action: []
+post_run: []
+
+runner_config:
+  tmp_dir: "/tmp/ansible_runner"   # 🗂️ Diretório temporário para logs
+  parallel: false                  # ⚡ Rodar comandos em paralelo
+  retries: 0                       # 🔁 Número de tentativas
+  default_timeout: 300             # ⏱️ Timeout padrão por comando
+  log_json: true                   # 📄 Salvar logs em JSON

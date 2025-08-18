@@ -1,0 +1,70 @@
+- name: Definir comando e arquivo de saída
+  ansible.builtin.set_fact:
+    cmd_to_run: >-
+      {% if item.type | lower in ['bash','sh','python','powershell'] %}
+        {{ item.type | lower }} {{ item.path | default('') }}
+      {% elif item.type | lower == 'command' %}
+        {{ item.cmd | default('') }}
+      {% elif item.type | lower == 'docker' %}
+        docker run --rm -i {{ item.image }} /bin/sh -c '{{ item.cmd }}'
+      {% else %}
+        echo "Tipo desconhecido"
+      {% endif %}
+    output_file: "{{ runner_config.tmp_dir }}/{{ phase_name | lower }}_{{ item.name | replace(' ', '_') }}.log"
+
+- name: Verificar se o script existe
+  ansible.builtin.stat:
+    path: "{{ item.path | default('') }}"
+  register: script_stat
+  when: item.type | lower in ['bash','sh','python','powershell']
+
+- name: Quebrar execução se script não existir
+  ansible.builtin.fail:
+    msg: "O script '{{ item.path }}' não existe!"
+  when: item.type | lower in ['bash','sh','python','powershell'] and not script_stat.stat.exists
+
+- name: Confirmar execução ✅
+  ansible.builtin.pause:
+    prompt: "{{ item.confirmation_message }}"
+  register: user_input
+  when: item.ask_confirmation | default(false)
+
+- name: Validar confirmação ❌
+  ansible.builtin.fail:
+    msg: "Execução interrompida pelo usuário no item {{ item.name }}. Apenas 'yes' permite continuar."
+  when: item.ask_confirmation | default(false) and user_input.user_input | lower != 'yes'
+
+- name: Executar comando/script ⏱️
+  ansible.builtin.shell: "{{ cmd_to_run }}"
+  args:
+    chdir: "{{ playbook_dir }}"
+    executable: /bin/bash
+  register: cmd_result
+  retries: "{{ item.retries | default(runner_config.retries) }}"
+  delay: 5
+  until: cmd_result.rc == 0 or item.ignore_errors | default(false)
+  async: "{{ item.async | default(0) }}"
+  poll: 0
+  ignore_errors: "{{ item.ignore_errors | default(false) }}"
+
+- name: Salvar saída em arquivo 📄
+  ansible.builtin.copy:
+    dest: "{{ output_file }}"
+    content: |
+      RETURN_CODE: {{ cmd_result.rc }}
+      STDOUT:
+      {{ cmd_result.stdout | default('') }}
+      STDERR:
+      {{ cmd_result.stderr | default('') }}
+
+- name: Mostrar saída do comando 💻
+  ansible.builtin.debug:
+    msg: |
+      ┌─[ {{ item.name }} | {{ item.type | default('N/A') }} ]─────────────
+      │ Comando: {{ cmd_to_run }}
+      │ Return Code: {{ cmd_result.rc }}
+      ├─ STDOUT ─────────────
+      {{ cmd_result.stdout | indent(2) }}
+      ├─ STDERR ─────────────
+      {{ cmd_result.stderr | indent(2) }}
+      └───────────────────────

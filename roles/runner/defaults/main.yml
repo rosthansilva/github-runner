@@ -1,0 +1,21 @@
+# Definição das fases com scripts ou comandos
+pre_run: []
+run_action: []
+post_run: []
+
+# Exemplo de uso:
+# pre_run:
+#   - type: bash
+#     path: /opt/scripts/check_env.sh
+#   - type: command
+#     cmd: "echo Preparando ambiente..."
+#
+# run_action:
+#   - type: python
+#     path: /opt/scripts/deploy.py
+#
+# post_run:
+#   - type: powershell
+#     path: C:\cleanup.ps1
+#   - type: command
+#     cmd: "echo Finalizado!"

@@ -1,0 +1,37 @@
+- name: Executar fase "{{ phase_name }}"
+  block:
+
+    # 1️⃣ Executa todos os itens e registra resultados
+    - name: Executar comandos/scripts
+      vars:
+        cmd_to_run: >-
+          {% if item.type | lower in ['bash','sh','python','powershell'] %}
+            {{ item.type | lower }} {{ item.path | default('') }}
+          {% elif item.type | lower == 'command' %}
+            {{ item.cmd | default('') }}
+          {% else %}
+            echo "Tipo de item desconhecido"
+          {% endif %}
+      ansible.builtin.shell: "{{ cmd_to_run }}"
+      args:
+        chdir: "{{ playbook_dir }}"
+      register: cmd_result
+      ignore_errors: true
+      loop: "{{ phase_items | default([]) }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    # 2️⃣ Mostrar saída de todos os itens de uma vez
+    - name: Mostrar saída estilo Terraform plan
+      ansible.builtin.debug:
+        msg: |
+          {% for r in cmd_result.results %}
+          ┌─[ {{ r.item.name | default('N/A') }} | {{ r.item.type | default('N/A') }} ]─────────────────────────────
+          │ Comando/Script: {{ r.item.path | default(r.item.cmd | default('N/A')) }}
+          │ Return Code  : {{ r.rc }}
+          ├─ STDOUT ──────────────────────────────────────────────────────────────
+          {{ r.stdout | default('') | indent(2) }}
+          ├─ STDERR ──────────────────────────────────────────────────────────────
+          {{ r.stderr | default('') | indent(2) }}
+          └───────────────────────────────────────────────────────────────────────
+          {% endfor %}

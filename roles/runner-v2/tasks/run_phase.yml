@@ -1,0 +1,5 @@
+- name: Iniciar fase "{{ phase_name }}" 🔹
+  ansible.builtin.include_tasks: run_item.yml
+  loop: "{{ phase_items }}"
+  loop_control:
+    label: "{{ item.name }}"

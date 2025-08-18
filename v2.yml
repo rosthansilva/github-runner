@@ -1,0 +1,51 @@
+# main.yml - Playbook para testar a role runner-v2
+- name: Teste da Role runner-v2
+  hosts: localhost
+  gather_facts: yes
+
+  vars:
+    pre_run:
+      - type: bash
+        path: scripts/check_env.sh
+        name: "Verificar ambiente Linux"
+        ask_confirmation: false
+      - type: powershell
+        path: scripts/check_env.psh
+        name: "Verificar ambiente Windows"
+        ask_confirmation: false
+
+    run_action:
+      - type: python3
+        path: scripts/deploy.py
+        name: "Deploy Python"
+        ask_confirmation: true
+        confirmation_message: "Deseja executar o deploy Python? (yes/no)"
+        retries: 2
+        ignore_errors: false
+      - type: powershell
+        path: scripts/deploy.psh
+        name: "Deploy PowerShell"
+        ask_confirmation: true
+        confirmation_message: "Deseja executar o deploy PowerShell? (yes/no)"
+        retries: 2
+        ignore_errors: false
+      - type: bash
+        path: scripts/migrate.sh
+        name: "Migração DB"
+        ask_confirmation: true
+        confirmation_message: "Deseja executar a migração? (yes/no)"
+        retries: 1
+        ignore_errors: false
+
+    post_run:
+      - type: powershell
+        path: scripts/cleanup.ps1
+        name: "Limpeza Windows"
+        ask_confirmation: false
+      - type: bash
+        path: scripts/migrate.sh
+        name: "Limpeza Linux"
+        ask_confirmation: false
+
+  roles:
+    - runner-v2
