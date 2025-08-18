@@ -139,7 +139,10 @@ Essas são features de **alto valor e baixa complexidade**, ideais para validar 
 
 | Feature                     | Justificativa / Valor                                                           | Emoji  | Complexidade |
 | --------------------------- | ------------------------------------------------------------------------------- | ------ | ------------ |
-| Execução local offline      | Permite testes rápidos e desenvolvimento sem depender de rede.                  | 🖥️    | 2            |
+| Execução local offline      | criar um binário com go para rodar local sem depender diretamente do ansible a abstrair que roda ansible já que o unico motivo para rodar em ansible é o zuul. Permite testes rápidos e desenvolvimento sem depender de rede e conhecimento de ansible. 
+
+exemplo: 
+  - zuul-runner run main.yml                 | 🖥️    | 2            |
 | Modo Dry-run                | Simula execução sem alterar nada, ideal para validação e segurança.             | 🕵️‍♂️ | 2            |
 | Alertas visuais no terminal | Facilita interpretação de logs e melhora produtividade.                         | 🎨     | 1            |
 | Pré-checks e validações     | Evita falhas desnecessárias e aumenta confiabilidade.  **exemplo** : verificar existencia de arquivos e diretórios, accesso a urls e etc                         | ✅      | 2            |
