@@ -5,14 +5,28 @@
 
   vars:
     pre_run:
+      - name: Teste Docker Ubuntu
+        type: docker
+        image: ubuntu:22.04
+        cmd: ls -la /
+        tty: True
+        interactive: False
+        volumes:
+          /home/rosthan/: /home
+        env:
+          MY_VAR: hello
+        workdir: /home
+      
       - type: bash
         path: scripts/check_env.sh
         name: "Verificar ambiente Linux"
         ask_confirmation: false
+      
       - type: powershell
         path: scripts/check_env.psh
         name: "Verificar ambiente Windows"
         ask_confirmation: false
+      
 
     run_action:
       - type: python3
@@ -22,6 +36,7 @@
         confirmation_message: "Deseja executar o deploy Python? (yes/no)"
         retries: 2
         ignore_errors: false
+      
       - type: powershell
         path: scripts/deploy.psh
         name: "Deploy PowerShell"
@@ -29,6 +44,7 @@
         confirmation_message: "Deseja executar o deploy PowerShell? (yes/no)"
         retries: 2
         ignore_errors: false
+      
       - type: bash
         path: scripts/migrate.sh
         name: "Migração DB"
@@ -42,6 +58,7 @@
         path: scripts/cleanup.ps1
         name: "Limpeza Windows"
         ask_confirmation: false
+      
       - type: bash
         path: scripts/migrate.sh
         name: "Limpeza Linux"

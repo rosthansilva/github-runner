@@ -1,3 +1,5 @@
+
+
 - name: Definir comando e arquivo de saída
   ansible.builtin.set_fact:
     cmd_to_run: >-
@@ -6,7 +8,27 @@
       {% elif item.type | lower == 'command' %}
         {{ item.cmd | default('') }}
       {% elif item.type | lower == 'docker' %}
-        docker run --rm -i {{ item.image }} /bin/sh -c '{{ item.cmd }}'
+        {% set docker_cmd = "docker run --rm" %}
+        {% if item.volumes is defined %}
+          {% for host_path, container_path in item.volumes.items() %}
+            {% set docker_cmd = docker_cmd + " -v " + host_path + ":" + container_path %}
+          {% endfor %}
+        {% endif %}
+        {% if item.env is defined %}
+          {% for key, value in item.env.items() %}
+            {% set docker_cmd = docker_cmd + " -e " + key + "=" + value %}
+          {% endfor %}
+        {% endif %}
+        {% if item.tty | default(true) %}
+          {% set docker_cmd = docker_cmd + " -t" %}
+        {% endif %}
+        {% if item.interactive | default(false) %}
+          {% set docker_cmd = docker_cmd + " -i" %}
+        {% endif %}
+        {% if item.workdir is defined %}
+          {% set docker_cmd = docker_cmd + " -w " + item.workdir %}
+        {% endif %}
+        {{ docker_cmd }} {{ item.image }} /bin/sh -c '{{ item.cmd }}'
       {% else %}
         echo "Tipo desconhecido"
       {% endif %}

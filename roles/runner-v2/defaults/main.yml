@@ -8,3 +8,5 @@ runner_config:
   retries: 0                       # 🔁 Número de tentativas
   default_timeout: 300             # ⏱️ Timeout padrão por comando
   log_json: true                   # 📄 Salvar logs em JSON
+  docker_default_tty: true
+  docker_default_interactive: false
