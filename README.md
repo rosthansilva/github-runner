@@ -189,18 +189,21 @@ flowchart TD
     classDef decisao fill:#FFF2CC,stroke:#333,stroke-width:2px;
     classDef feature fill:#FFDDE0,stroke:#333,stroke-width:1px;
     classDef log fill:#F0E6FF,stroke:#333,stroke-width:1px;
+    classDef preRun fill:#CFE2FF,stroke:#333,stroke-width:1.5px;
+    classDef run fill:#D9F2D9,stroke:#333,stroke-width:1.5px;
+    classDef postRun fill:#F9E6FF,stroke:#333,stroke-width:1.5px;
 
     %% Fluxo principal
-    A[Início da Execução]:::inicioFim --> B[Pré-checks e Validações]:::processo
-    B --> C{Clonar Repositório Remoto? 🔄}:::decisao
-    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]:::processo
-    C -- Não --> E[Usar workflow local]:::processo
-    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]:::processo
+    A[Início da Execução]:::inicioFim --> B[Pré-checks e Validações]:::preRun
+    B --> C{Clonar Repositório Remoto? 🔄}:::preRun
+    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]:::preRun
+    C -- Não --> E[Usar workflow local]:::preRun
+    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]:::preRun
     E --> F
-    F --> G[Executar pipeline principal]:::processo
+    F --> G[Executar pipeline principal]:::run
 
-    %% Pipeline Features agrupadas
-    subgraph PIPELINE[Pipeline Features 🚀]
+    %% Pipeline Features agrupadas (Run)
+    subgraph PIPELINE[Pipeline Features 🚀]:::run
         direction TB
         G1[Pipeline condicional 🔀]:::feature
         G2[Paralelismo avançado ⚡]:::feature
@@ -215,6 +218,7 @@ flowchart TD
     end
 
     G --> PIPELINE
-    PIPELINE --> H[Logs e Auditoria 📊🎨]:::log
-    H --> I[Métricas de performance ⏱️]:::log
+    PIPELINE --> H[Logs e Auditoria 📊🎨]:::postRun
+    H --> I[Métricas de performance ⏱️]:::postRun
     I --> J[Conclusão]:::inicioFim
+
