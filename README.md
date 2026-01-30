@@ -1,34 +1,34 @@
 # Ansible Runner Role 🚀
 
-Role completa para executar pipelines de comandos ou scripts com múltiplas fases:
+Complete role to execute command or script pipelines with multiple phases:
 
-* 🔹 **Pre-run**: comandos executados antes da ação principal
-* 🏃 **Run Action**: comandos principais ou execução de scripts
-* 🛠️ **Post-run**: limpeza ou tarefas finais
+* 🔹 **Pre-run**: commands executed before the main action
+* 🏃 **Run Action**: main commands or script execution
+* 🛠️ **Post-run**: cleanup or final tasks
 
-## Features principais
+## Key Features
 
-| Feature           | Descrição                                            | Emoji |
-| ----------------- | ---------------------------------------------------- | ----- |
-| Pre-run           | Executa tarefas antes da ação principal              | 🔹    |
-| Run Action        | Tarefas principais do pipeline                       | 🏃    |
-| Post-run          | Tarefas finais de cleanup                            | 🛠️   |
-| Confirmação       | Permite que usuário confirme execução antes de rodar | ✅     |
-| Retry automático  | Permite re-executar comandos falhos N vezes          | 🔁    |
-| Timeout           | Limita tempo de execução de cada comando             | ⏱️    |
-| Execução paralela | Rodar comandos de forma assíncrona/paralela          | ⚡     |
-| Docker            | Suporte a execução de comandos dentro de containers  | 🐳    |
-| Logs              | Captura saída em arquivos e JSON                     | 📄    |
-| Ignore errors     | Continua mesmo se o comando falhar                   | ❌     |
+| Feature | Description | Emoji |
+| --- | --- | --- |
+| Pre-run | Executes tasks before the main action | 🔹 |
+| Run Action | Main pipeline tasks | 🏃 |
+| Post-run | Final cleanup tasks | 🛠️ |
+| Confirmation | Allows user confirmation before running | ✅ |
+| Auto-retry | Allows re-executing failed commands N times | 🔁 |
+| Timeout | Limits execution time for each command | ⏱️ |
+| Parallel execution | Run commands asynchronously/in parallel | ⚡ |
+| Docker | Support for executing commands inside containers | 🐳 |
+| Logs | Captures output in files and JSON | 📄 |
+| Ignore errors | Continues even if the command fails | ❌ |
 
 ---
 
-## Estrutura do Playbook
+## Playbook Structure
 
-Exemplo `main.yml` para testar a role:
+Example `main.yml` to test the role:
 
 ```yaml
-- name: Teste da Role runner-v2
+- name: Runner-v2 Role Test
   hosts: localhost
   gather_facts: yes
 
@@ -36,11 +36,11 @@ Exemplo `main.yml` para testar a role:
     pre_run:
       - type: bash
         path: scripts/check_env.sh
-        name: "Verificar ambiente Linux"
+        name: "Check Linux environment"
         ask_confirmation: false
       - type: powershell
         path: scripts/check_env.psh
-        name: "Verificar ambiente Windows"
+        name: "Check Windows environment"
         ask_confirmation: false
 
     run_action:
@@ -48,71 +48,71 @@ Exemplo `main.yml` para testar a role:
         path: scripts/deploy.py
         name: "Deploy Python"
         ask_confirmation: true
-        confirmation_message: "Deseja executar o deploy Python? (yes/no)"
+        confirmation_message: "Do you want to execute the Python deploy? (yes/no)"
         retries: 2
         ignore_errors: false
       - type: powershell
         path: scripts/deploy.psh
         name: "Deploy PowerShell"
         ask_confirmation: true
-        confirmation_message: "Deseja executar o deploy PowerShell? (yes/no)"
+        confirmation_message: "Do you want to execute the PowerShell deploy? (yes/no)"
         retries: 2
         ignore_errors: false
       - type: bash
         path: scripts/migrate.sh
-        name: "Migração DB"
+        name: "DB Migration"
         ask_confirmation: true
-        confirmation_message: "Deseja executar a migração? (yes/no)"
+        confirmation_message: "Do you want to execute the migration? (yes/no)"
         retries: 1
         ignore_errors: false
 
     post_run:
       - type: powershell
         path: scripts/cleanup.ps1
-        name: "Limpeza Windows"
+        name: "Windows Cleanup"
         ask_confirmation: false
       - type: bash
         path: scripts/migrate.sh
-        name: "Limpeza Linux"
+        name: "Linux Cleanup"
         ask_confirmation: false
 
   roles:
     - runner-v2
+
 ```
 
 ---
 
-## Configuração de callback para melhor formatação
+## Callback Configuration for Better Formatting
 
-Para ver os logs em YAML, configure o `ansible.cfg`:
+To view logs in YAML format, configure `ansible.cfg`:
 
 ```ini
 [defaults]
-# Use o plugin de callback YAML
+# Use the YAML callback plugin
 stdout_callback = yaml
-# Habilitar callback para ad-hoc
+# Enable callback for ad-hoc commands
 bin_ansible_callbacks = True
+
 ```
 
 ---
 
-## Como funciona a execução da role
+## How the Role Execution Works
 
 1. **Pre-run**
-   Executa scripts de pré-verificação antes do pipeline principal.
-
+Executes pre-check scripts before the main pipeline.
 2. **Run Action**
-   Executa scripts ou comandos principais.
+Executes main scripts or commands.
+* Asks the user if execution should continue (if `ask_confirmation` = true).
+* Allows automatic retries (`retries`) if the command fails.
+* Can ignore errors (`ignore_errors`) without interrupting the pipeline.
 
-   * Pergunta ao usuário se a execução deve continuar (se `ask_confirmation` = true).
-   * Permite retries automáticos (`retries`) se o comando falhar.
-   * Pode ignorar erros (`ignore_errors`) sem interromper o pipeline.
 
 3. **Post-run**
-   Executa scripts de limpeza ou tarefas finais após o pipeline.
-
+Executes cleanup scripts or final tasks after the pipeline.
 4. **Logs**
-   Cada comando gera um arquivo `.log` dentro de `runner_config.tmp_dir` com:
+Each command generates a `.log` file inside `runner_config.tmp_dir` with:
 
 ```text
 RETURN_CODE: 0
@@ -120,101 +120,102 @@ STDOUT:
 ...
 STDERR:
 ...
+
 ```
 
 5. **PowerShell**
-   Verifica se o PowerShell (`pwsh`) está instalado e instala automaticamente no Ubuntu via Snap, se necessário.
-
+Checks if PowerShell (`pwsh`) is installed and automatically installs it on Ubuntu via Snap if necessary.
 6. **Docker**
-   Comandos do tipo `docker` são executados em containers de forma isolada.
-
+Commands of type `docker` are executed inside containers in an isolated manner.
 
 ---
 
 ## **Roadmap – runner-v2** 🚀
 
-### **Curto Prazo (rápida entrega / impacto imediato)** 🟢
+### **Short Term (Quick delivery / Immediate impact)** 🟢
 
-Essas são features de **alto valor e baixa complexidade**, ideais para validar a base do runner:
+These are **high value, low complexity** features, ideal for validating the runner foundation:
 
-| Feature                     | Justificativa / Valor                                                           | Emoji  | Complexidade |
-| --------------------------- | ------------------------------------------------------------------------------- | ------ | ------------ |
-| Execução local offline      | criar um binário com go para rodar local sem depender diretamente do ansible a abstrair que roda ansible já que o unico motivo para rodar em ansible é o zuul. Permite testes rápidos e desenvolvimento sem depender de rede e conhecimento de ansible. exemplo : zuul-runner main.yml <- roda a pipeline descrita sem precisar de ansible         | 🖥️    | 2            |
-| Modo Dry-run                | Simula execução sem alterar nada, ideal para validação e segurança.             | 🕵️‍♂️ | 2            |
-| Alertas visuais no terminal | Facilita interpretação de logs e melhora produtividade.                         | 🎨     | 1            |
-| Pré-checks e validações     | Evita falhas desnecessárias e aumenta confiabilidade.  **exemplo** : verificar existencia de arquivos e diretórios, accesso a urls e etc                         | ✅      | 2            |
-| Integração CI/CD            | Permite acionamento do runner em pipelines existentes, chamando a partir de um repositório independente do zuul e garantindo uso imediato. | 🔗     | 2            |
-
----
-
-### **Médio Prazo (impacto estratégico / complexidade moderada)** 🟡
-
-Features que agregam **segurança, flexibilidade e rastreabilidade**:
-
-| Feature                                | Justificativa / Valor                                                                                | Emoji | Complexidade |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----- | ------------ |
-| Pipeline condicional                   | Fluxos inteligentes baseados em resultados anteriores, reduzindo retrabalho e aumentando eficiência. | 🔀    | 3            |
-| Templates dinâmicos                    | Reuso e parametrização de scripts, reduzindo erros e duplicação.                                     | 📝    | 3            |
-| Integração com Vault                   | Segurança aprimorada, evitando hardcoding de credenciais.                                            | 🔐    | 3            |
-| Auditoria completa                     | Rastreabilidade e compliance garantidas.                                                             | 📊    | 3            |
-| Suporte multi-OS                       | Maior compatibilidade e flexibilidade de execução em diferentes sistemas.                            | 🌐    | 3            |
-| Logs centralizados                     | Facilita análise e auditoria de execuções.                                                           | 🗃️   | 3            |
-| Versionamento de scripts               | Garantia de consistência em diferentes versões de scripts ou roles.                                  | 🗂️   | 3            |
-| Parâmetros dinâmicos por pipeline      | Personalização por branch, workflow ou ambiente, aumentando flexibilidade.                           | ⚙️    | 3            |
-| Suporte a múltiplos workflows por repo | Organização e manutenção facilitadas em projetos complexos.                                          | 🔄    | 3            |
+| Feature | Justification / Value | Emoji | Complexity |
+| --- | --- | --- | --- |
+| Local offline execution | Create a Go binary to run locally without directly depending on Ansible, abstracting the fact that it runs Ansible (since the only reason to use Ansible is for Zuul). Allows quick testing and development without network dependency or Ansible knowledge. Example: `zuul-runner main.yml` <- runs the described pipeline. | 🖥️ | 2 |
+| Dry-run Mode | Simulates execution without altering anything, ideal for validation and security. | 🕵️‍♂️ | 2 |
+| Visual alerts in terminal | Facilitates log interpretation and improves productivity. | 🎨 | 1 |
+| Pre-checks and validations | Prevents unnecessary failures and increases reliability. **Example**: checking for existence of files and directories, URL access, etc. | ✅ | 2 |
+| CI/CD Integration | Allows triggering the runner in existing pipelines, calling it from a repository independent of Zuul and ensuring immediate usage. | 🔗 | 2 |
 
 ---
 
-### **Longo Prazo (alto valor / alta complexidade)** 🔴
+### **Medium Term (Strategic impact / Moderate complexity)** 🟡
 
-Features que demandam **integração avançada, automação e paralelismo**, mas trarão grande impacto no desempenho e confiabilidade:
+Features that add **security, flexibility, and traceability**:
 
-| Feature                           | Justificativa / Valor                                                                                            | Emoji | Complexidade |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----- | ------------ |
-| Execução via Zuul com repo remoto | Atualização centralizada e colaboração entre equipes, permitindo rodar workflows direto de repositórios remotos. | 🔄    | 4            |
-| Rollback automático               | Reduz risco em ambientes de produção revertendo alterações automaticamente em falhas.                            | ⏪     | 5            |
-| Paralelismo avançado              | Reduz tempo total de execução mantendo dependências entre tarefas.                                               | ⚡     | 4            |
-| Suporte a Kubernetes              | Integração com clusters cloud-native, essencial para pipelines modernos.                                         | ☸️    | 4            |
-| Checkpoint / Resume               | Retoma execuções parciais após falhas, evitando retrabalho em pipelines longos.                                  | ⏩     | 4            |
-| Suporte a múltiplos repositórios  | Combinação de arquivos de diferentes repositórios, essencial para ambientes distribuídos ou microserviços.       | 🔄    | 4            |
-| Métricas de performance           | Permite monitoramento e otimização de pipelines com base em consumo de tempo e recursos.                         | ⏱️    | 3            |
+| Feature | Justification / Value | Emoji | Complexity |
+| --- | --- | --- | --- |
+| Conditional Pipeline | Smart flows based on previous results, reducing rework and increasing efficiency. | 🔀 | 3 |
+| Dynamic Templates | Reuse and parameterization of scripts, reducing errors and duplication. | 📝 | 3 |
+| Vault Integration | Enhanced security, avoiding hardcoded credentials. | 🔐 | 3 |
+| Full Audit | Guaranteed traceability and compliance. | 📊 | 3 |
+| Multi-OS Support | Greater compatibility and flexibility for execution on different systems. | 🌐 | 3 |
+| Centralized Logs | Facilitates analysis and auditing of executions. | 🗃️ | 3 |
+| Script Versioning | Guarantees consistency across different versions of scripts or roles. | 🗂️ | 3 |
+| Dynamic Parameters per Pipeline | Customization by branch, workflow, or environment, increasing flexibility. | ⚙️ | 3 |
+| Multiple Workflows per Repo Support | Facilitated organization and maintenance in complex projects. | 🔄 | 3 |
 
-## Fluxo do Runner v2
+---
+
+### **Long Term (High value / High complexity)** 🔴
+
+Features that demand **advanced integration, automation, and parallelism**, but will bring major impact on performance and reliability:
+
+| Feature | Justification / Value | Emoji | Complexity |
+| --- | --- | --- | --- |
+| Execution via Zuul w/ remote repo | Centralized updates and cross-team collaboration, allowing workflows to run directly from remote repositories. | 🔄 | 4 |
+| Automatic Rollback | Reduces risk in production environments by automatically reverting changes upon failure. | ⏪ | 5 |
+| Advanced Parallelism | Reduces total execution time while maintaining dependencies between tasks. | ⚡ | 4 |
+| Kubernetes Support | Integration with cloud-native clusters, essential for modern pipelines. | ☸️ | 4 |
+| Checkpoint / Resume | Resumes partial executions after failures, avoiding rework in long pipelines. | ⏩ | 4 |
+| Multiple Repository Support | Combining files from different repositories, essential for distributed environments or microservices. | 🔄 | 4 |
+| Performance Metrics | Allows monitoring and optimization of pipelines based on time and resource consumption. | ⏱️ | 3 |
+
+## Runner v2 Workflow
 
 ```mermaid
 flowchart TD
-    %% Estilos de nós
-    classDef inicioFim fill:#DDEEFF,stroke:#333,stroke-width:2px;
-    classDef processo fill:#E0FFD8,stroke:#333,stroke-width:1.5px;
-    classDef decisao fill:#FFF2CC,stroke:#333,stroke-width:2px;
+    %% Node Styles
+    classDef startEnd fill:#DDEEFF,stroke:#333,stroke-width:2px;
+    classDef process fill:#E0FFD8,stroke:#333,stroke-width:1.5px;
+    classDef decision fill:#FFF2CC,stroke:#333,stroke-width:2px;
     classDef feature fill:#FFDDE0,stroke:#333,stroke-width:1px;
     classDef log fill:#F0E6FF,stroke:#333,stroke-width:1px;
 
-    %% Fluxo principal
-    A[Início da Execução]:::inicioFim --> B[Pré-checks e Validações]:::processo
-    B --> C{Clonar Repositório Remoto? 🔄}:::decisao
-    C -- Sim --> D[Selecionar workflow do repo: .zuul-runner/workflow.yml]:::processo
-    C -- Não --> E[Usar workflow local]:::processo
-    D --> F[Injetar parâmetros e variáveis dinâmicas ⚙️📝]:::processo
+    %% Main Flow
+    A[Start Execution]:::startEnd --> B[Pre-checks & Validations]:::process
+    B --> C{Clone Remote Repo? 🔄}:::decision
+    C -- Yes --> D[Select repo workflow: .zuul-runner/workflow.yml]:::process
+    C -- No --> E[Use local workflow]:::process
+    D --> F[Inject dynamic parameters & variables ⚙️📝]:::process
     E --> F
-    F --> G[Executar pipeline principal]:::processo
+    F --> G[Execute main pipeline]:::process
 
-    %% Pipeline Features agrupadas
+    %% Grouped Pipeline Features
     subgraph PIPELINE[Pipeline Features 🚀]
         direction TB
-        G1[Pipeline condicional 🔀]:::feature
-        G2[Paralelismo avançado ⚡]:::feature
-        G3[Suporte Kubernetes ☸️]:::feature
-        G4[Integração Vault 🔐]:::feature
-        G5[Templates dinâmicos 📝]:::feature
-        G6[Modo Dry-run 🕵️‍♂️]:::feature
-        G7[Rollback automático ⏪]:::feature
+        G1[Conditional Pipeline 🔀]:::feature
+        G2[Advanced Parallelism ⚡]:::feature
+        G3[Kubernetes Support ☸️]:::feature
+        G4[Vault Integration 🔐]:::feature
+        G5[Dynamic Templates 📝]:::feature
+        G6[Dry-run Mode 🕵️‍♂️]:::feature
+        G7[Automatic Rollback ⏪]:::feature
         G8[Checkpoint / Resume ⏩]:::feature
-        G9[Suporte multi-OS 🌐]:::feature
-        G10[Versionamento de scripts 🗂️]:::feature
+        G9[Multi-OS Support 🌐]:::feature
+        G10[Script Versioning 🗂️]:::feature
     end
 
     G --> PIPELINE
-    PIPELINE --> H[Logs e Auditoria 📊🎨]:::log
-    H --> I[Métricas de performance ⏱️]:::log
-    I --> J[Conclusão]:::inicioFim
+    PIPELINE --> H[Logs & Audit 📊🎨]:::log
+    H --> I[Performance Metrics ⏱️]:::log
+    I --> J[End]:::startEnd
+
+```
